@@ -21,8 +21,17 @@ const Feed = () => {
   const [searchText, setSearchText] = useState('');
   const [posts, setPosts] = useState([]);
 
-  const handleSearchChange = () => {
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+    // console.log(posts[0]);
+  }
 
+  const filterPostsBySearch = (posts, searchText) => {
+    return posts.filter((post) => {
+      return post.prompt.includes(searchText)
+        || post.tag.includes(searchText)
+        || post.creator.username.includes(searchText);
+    })
   }
 
   useEffect(() => {
@@ -41,7 +50,7 @@ const Feed = () => {
       <form className='relative w-full flex-center'>
         <input 
           type='text'
-          placeholder='Search for a tag or a username'
+          placeholder='Search for a keyword, a tag or a username'
           value={searchText}
           onChange={handleSearchChange}
           required
@@ -50,8 +59,10 @@ const Feed = () => {
       </form>
 
       <PromptCardList 
-        data={posts}
-        handleTagClick={() => {}}
+        data={filterPostsBySearch(posts, searchText)}
+        handleTagClick={(tag) => {
+          setSearchText(tag);
+        }}
       />
 
     </section>
